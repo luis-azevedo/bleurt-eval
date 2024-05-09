@@ -1,0 +1,71 @@
+openapi: 3.0.0
+info:
+  description: This is a simple API.
+  title: GenAI evaluation models
+  version: 1.0.0
+servers:
+- description: SwaggerHub API Auto Mocking.
+  url: https://virtserver.swaggerhub.com/luis-azevedo/bleurt-evalution/1.0.0
+tags:
+- description: Sabre developer calls.
+  name: sabre-users
+paths:
+  /bleurt-score:
+    post:
+      description: |
+        The output score is always a number between 0 and (approximately 1).
+        This value indicates how similar the generated text is to the reference texts,
+         with values closer to 1 representing more similar texts.
+      operationId: compute_bleurt_score
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bleurt'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BleurtScore'
+          description: Bleurt score given predicted and reference.
+        "400":
+          description: Bad input parameter.
+      summary: Given a predicted text and a reference text it computes the bleurt
+        score
+      tags:
+      - sabre-users
+      x-openapi-router-controller: openapi_server.controllers.sabre_users_controller
+components:
+  schemas:
+    Bleurt:
+      example:
+        reference: The sky presents a blue colo because of the dispersion fenomena.
+        predicted: The sky is blue.
+      properties:
+        predicted:
+          description: Predicted text.
+          example: The sky is blue.
+          title: predicted
+          type: string
+        reference:
+          description: Reference text.
+          example: The sky presents a blue colo because of the dispersion fenomena.
+          title: reference
+          type: string
+      required:
+      - predicted
+      - reference
+      title: Bleurt
+      type: object
+    BleurtScore:
+      example:
+        score: 0.6345
+      properties:
+        score:
+          description: Bleurt score output.
+          example: 0.6345
+          title: score
+          type: number
+      title: BleurtScore
+      type: object
